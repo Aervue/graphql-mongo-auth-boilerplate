@@ -4,6 +4,7 @@ Detailed README coming soon, project is unfinished!
 
 ## **Installation**
 `npm install`
+`configure .env file`
 
 ## **Features**
 ```
