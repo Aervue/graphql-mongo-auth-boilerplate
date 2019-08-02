@@ -7,7 +7,7 @@ const queryResolvers = {
       return getAllUsers
     },
     me: async (root, args, { req }) => {
-      const currentUser = await User.findOne({ email: req.user })
+      const currentUser = await User.findById({ _id: req.user.id })
       return currentUser
     },
     test: () => {

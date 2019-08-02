@@ -19,7 +19,7 @@ const mutationResolvers = {
       return newUser
     },
     login: async (_, { email, password }, { res }) => {
-      const user = await User.findOne({ email })
+      const user = await User.findOne({ email }, ['email', 'password', 'role'])
       if (!user) {
         throw new Error('Credentials incorrect')
       }
@@ -29,7 +29,7 @@ const mutationResolvers = {
         throw new Error('Credentials incorrect')
       }
 
-      const accessToken = createAccessToken(user, process.env.ACCESS_TOKEN_SECRET, '5m')
+      const accessToken = createAccessToken(user, process.env.ACCESS_TOKEN_SECRET, process.env.ACCESS_TOKEN_EXPIRATION)
       const refreshToken = createRefreshToken()
 
       user.refreshToken = refreshToken

@@ -8,6 +8,18 @@ const { typeDefs, resolvers } = require('../utils/imports')
 
 const authTokens = require('../auth/authTokens')
 const requireAuthDirective = require('../auth/requireAuthDirective')
+// const AnalyticsExtension = require('./analyticsExtension')
+
+var whitelist = ['http://localhost:4000', 'http://localhost:8080']
+var corsOptionsDelegate = function (req, callback) {
+  var corsOptions
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true, credentials: true } // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false, credentials: true } // disable CORS for this request
+  }
+  callback(console.log(cors), corsOptions) // callback expects two parameters: error and options
+}
 
 const startServer = async () => {
   const server = new ApolloServer({
@@ -17,18 +29,23 @@ const startServer = async () => {
       requireAuth: requireAuthDirective
     },
     context: ({ req, res }) => ({ req, res })
+    // context2: ({ req }) => { return { currentUser: getUser(req.cookies['access-totken']) } }
   })
 
   const app = express()
 
   app.use(helmet())
-  app.use(cors())
+  // app.use(cors(corsOptionsDelegate))
   app.use(cookieParser())
   app.use(authTokens)
 
   server.applyMiddleware({
     app,
-    path: '/graphql'
+    path: '/graphql',
+    cors: corsOptionsDelegate
+    // introspection: true,
+    // tracing: true,
+    // extensions: [() => new AnalyticsExtension()]
   })
 
   app.listen({ port: process.env.PORT }, () =>

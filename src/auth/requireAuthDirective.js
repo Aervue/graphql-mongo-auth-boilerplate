@@ -10,6 +10,7 @@ class RequireAuthDirective extends SchemaDirectiveVisitor {
     const { role } = this.args
     field.resolve = async function (...args) {
       const { req } = args[2]
+      console.log(role)
       if (req.user) {
         if (role && (!req.user.role.includes(role))) {
           throw new AuthenticationError(

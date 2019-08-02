@@ -1,19 +1,17 @@
 const { gql } = require('apollo-server-express')
 
 const schema = gql`
-directive @requireAuth(role: Role) on FIELD_DEFINITION
+directive @requireAuth(role: Role = USER) on FIELD_DEFINITION
 enum Role {
   ADMIN
   MODERATOR
   USER
 }
+
 type User {
   _id: ID
   email: String!
   role: String
-}
-type Token {
-  token: String
 }
 
 input UserInput {
@@ -24,14 +22,14 @@ input UserInput {
 type Query {
   me: User @requireAuth
   getAllUsers: [User]
-  test: String @requireAuth
+  test: String
 }
 
 type Mutation {
   # User
   register(email: String!, password: String!): User
   login(email: String!, password: String!): User
-  invalidateTokens: Boolean!
+  # invalidateTokens: Boolean!
 }
 `
 
