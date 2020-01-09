@@ -14,7 +14,8 @@ mongoose.set('debug', true)
 const connectDB = () => {
   mongoose.connect(process.env.MONGODB_URI, {
     keepAlive: 1,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
 
   mongoose.set('useCreateIndex', true)
